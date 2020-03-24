@@ -234,10 +234,7 @@ def main():
         if window < 1 and i + 1 >= gaze_data.count: break
         if window > 1:
             velocity = sum(amplitude) / window
-            eye_velocities.append(velocity, buffer[median])
-            # print(sum(amplitude), end=' ')
-            # print(window, end=' ')
-            # print(velocity)
+            eye_velocities.append([velocity, buffer[median]])
             if velocity < 30:
                 gaze_data.movement_type[buffer[0]] = 1  # fixation
                 # print(buffer[0])
@@ -245,6 +242,13 @@ def main():
                 gaze_data.movement_type[buffer[0]] = 2  # saccade
             amplitude.pop(0)
             buffer.pop(0)
+
+    count = 0
+    for i in range(len(gaze_data.left_gaze_point_in_user_coordinate_system)):
+        if math.isnan(gaze_data.left_gaze_point_in_user_coordinate_system[i][0]) is False:
+            count += 1
+
+    print(len(eye_velocities), str(count))
 
     fixation, saccade = get_fixation_and_saccade(gaze_data)
     scatter_plot(gaze_data, fixation, saccade)
